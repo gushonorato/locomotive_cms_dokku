@@ -15,6 +15,7 @@ O deploy da aplicação é feito em uma EC2 utilizando o PaaS Dokku.
 ```
 > wget https://raw.githubusercontent.com/dokku/dokku/v0.10.5/bootstrap.sh
 > sudo DOKKU_TAG=v0.10.5 bash bootstrap.sh
+```
 
 3. Digite o endereço IP publico da sua instância EC2 no seu navegador
 
