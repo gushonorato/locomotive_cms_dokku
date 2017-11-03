@@ -33,6 +33,19 @@ O deploy da aplicação é feito em uma EC2 utilizando o PaaS Dokku.
 > dokku config:set meu_plantao_medico_site_engine S3_BUCKET=xxxx S3_KEY_ID=xxxx S3_SECRET_KEY=xxxx S3_BUCKET_REGION=xxxx
 ```
 
+7. Adicione os domínios ao Dokku
+
+```
+> dokku domains:add meu_plantao_medico_site_engine meuplantaomedico.com meuplantaomedico.com.br
+```
+
+8. Instale o plugin do mongo, crie a base de dados e faça o link com a aplicação.
+```
+sudo dokku plugin:install https://github.com/dokku/dokku-mongo.git mongo
+dokku mongo:create meu_plantao_medico_site_mongo
+dokku mongo:link meu_plantao_medico_site_mongo meu_plantao_medico_site_engine
+```
+
 ### Configurando a máquina de desenvolvimento
 
 Para fazer o deploy é tão simples quanto usar o Heroku.
