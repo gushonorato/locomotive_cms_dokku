@@ -21,7 +21,6 @@ O deploy da aplicação é feito em uma EC2 utilizando o PaaS Dokku.
 
 4. Adicione a sua chave pública SSH na interface e clique em "Finish Setup". A chave que deve ser adicionada é do desenvolvedor que irá ser responsável por fazer o deploy das novas versões.
 
-```
 5. Crie a aplicação no Dokku.
 
 ```
