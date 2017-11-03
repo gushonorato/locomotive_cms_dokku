@@ -5,7 +5,7 @@ development:
     default:
       # Defines the name of the default database that Mongoid can connect to.
       # (required).
-      database: meu_plantao_medico_site_engine_dev
+      database: meu_plantao_medico_site_engine_development
       # Provides the hosts the default client can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
@@ -20,6 +20,8 @@ development:
         # (default: primary)
         # read:
         #   mode: :secondary_preferred
+        #   tag_sets:
+        #     - use: web
 
         # The name of the user for authentication.
         # user: 'user'
@@ -90,7 +92,7 @@ development:
         # A passphrase for the private key.
         # ssl_key_pass_phrase: password
 
-        # Whether or not to do peer certification validation. (default: false)
+        # Whether or not to do peer certification validation. (default: true)
         # ssl_verify: true
 
         # The file containing a set of concatenated certification authority certifications
@@ -124,20 +126,31 @@ development:
     # Ensure all times are UTC in the app side. (default: false)
     # use_utc: false
 
+    # Set the Mongoid and Ruby driver log levels when not in a Rails
+    # environment. The Mongoid logger will be set to the Rails logger
+    # otherwise.(default: :info)
+    # log_level: :info
 test:
   clients:
     default:
       database: meu_plantao_medico_site_engine_test
       hosts:
-        - localhost:27017
+        - dokku-mongo-mpm-mongo:27017
       options:
+        read:
+          mode: :primary
         max_pool_size: 1
 
+<% if ENV['MONGO_URL'] %>
+<% uri = URI.parse(ENV['MONGO_URL']) %>
 production:
   clients:
     default:
-      database: meu_plantao_medico_site_engine_production
       hosts:
-        - localhost:27017
+        - <%= uri.host %>:<%= uri.port %>
+      database: <%= uri.path.gsub('/', '') %>
       options:
-        max_pool_size: 1
+        user: <%= uri.user %>
+        password: <%= uri.password %>
+        max_pool_size: 20
+<% end %>
