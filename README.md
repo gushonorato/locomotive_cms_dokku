@@ -46,6 +46,20 @@ dokku mongo:create meu_plantao_medico_site_mongo
 dokku mongo:link meu_plantao_medico_site_mongo meu_plantao_medico_site_engine
 ```
 
+9. Configure o SSL através do plugin Let's Encrypt
+
+```
+> sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
+> dokku config:set --no-restart mpm DOKKU_LETSENCRYPT_EMAIL=<e-mail para o certificado>
+> dokku letsencrypt meu_plantao_medico_site_engine
+```
+
+10. Configure o plugin para renovar automaticamente o certificado
+
+```
+> dokku letsencrypt:auto-renew meu_plantao_medico_site_engine
+```
+
 ### Configurando a máquina de desenvolvimento
 
 Para fazer o deploy é tão simples quanto usar o Heroku.
