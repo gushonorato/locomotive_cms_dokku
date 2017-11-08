@@ -1,82 +1,82 @@
-# Meu plantão médico site engine
+# Dokku Locomotive
 
-O site foi criado usando o Locomotive CMS. Um site criado no Locomotive CMS consiste em dois projetos, o servidor (engine) e o ambiente de desenvolvimento (wagon). Esse projeto consiste no engine. Para mais informações acesse a documentação do Locomotive CMS em: https://locomotive-v3.readme.io/docs/getting-started-with-locomotive.
+This project aims to simplify the deployment of [Locomotive CMS](https://www.locomotivecms.com/) engine using [Dokku](https://github.com/dokku/dokku). Just follow the simple steps below.
 
-## Deploy
+## Installing Dokku and configuring the server
 
-### Preparando o servidor
+1. Build a new instance using you favorite VPS provider.
 
-O deploy da aplicação é feito em uma EC2 utilizando o PaaS Dokku.
+2. Login via SSH on instance and [install Dokku](https://github.com/dokku/dokku#installation).
 
-1. Crie uma instância da Amazon EC2. Adicione um Elastic IP e configure corretamente o DNS para os domínios meuplantaomedico.com e meuplantaomedico.com.br.
+3. Type the public address of you instance in your browser and add a public key and click "Finish Setup". You must add the key of the developer resposible to deploy new versions of the application.
 
-2. Entre na máquina usando o SSH e instale o Dokku.
-
-```
-> wget https://raw.githubusercontent.com/dokku/dokku/v0.10.5/bootstrap.sh
-> sudo DOKKU_TAG=v0.10.5 bash bootstrap.sh
-```
-
-3. Digite o endereço IP publico da sua instância EC2 no seu navegador
-
-4. Adicione a sua chave pública SSH na interface e clique em "Finish Setup". A chave que deve ser adicionada é do desenvolvedor que irá ser responsável por fazer o deploy das novas versões.
-
-5. Crie a aplicação no Dokku.
+4. Create Dokku application.
 
 ```
-> dokku apps:create meu_plantao_medico_site_engine
+> dokku apps:create my_webapp
 ```
 
-6. O Locomotive usa o S3 para armazenar os uploads. Sendo assim, é preciso informar as credenciais através das variáveis de ambiente: `S3_BUCKET`, `S3_KEY_ID`, `S3_SECRET_KEY` e `S3_BUCKET_REGION`. Para adicionar as variáveis de ambiente use o seguinte comando:
+5. O Locomotive uses S3 to store assets and uploads. You must configure environment variables `S3_BUCKET`, `S3_KEY_ID`, `S3_SECRET_KEY` e `S3_BUCKET_REGION` with the following command:
 
 ```
-> dokku config:set meu_plantao_medico_site_engine S3_BUCKET=xxxx S3_KEY_ID=xxxx S3_SECRET_KEY=xxxx S3_BUCKET_REGION=xxxx
+> dokku config:set my_webapp S3_BUCKET=xxxx S3_KEY_ID=xxxx S3_SECRET_KEY=xxxx S3_BUCKET_REGION=xxxx
 ```
 
-7. Adicione os domínios ao Dokku
+6. Add you domain names in Dokku application
 
 ```
-> dokku domains:add meu_plantao_medico_site_engine meuplantaomedico.com meuplantaomedico.com.br
+> dokku domains:add my_webapp mydomain1.com mydomain2.com
 ```
 
-8. Instale o plugin do mongo, crie a base de dados e faça o link com a aplicação.
+7. Locomotive requires MongoDB. Install [Dokku's MongoDB plugin](https://github.com/dokku/dokku-mongo), create the database and link the service to your Dokku application.
 ```
 sudo dokku plugin:install https://github.com/dokku/dokku-mongo.git mongo
-dokku mongo:create meu_plantao_medico_site_mongo
-dokku mongo:link meu_plantao_medico_site_mongo meu_plantao_medico_site_engine
+dokku mongo:create my_webapp_mongodb
+dokku mongo:link my_webapp_mongodb my_webapp
 ```
 
-9. Configure o SSL através do plugin Let's Encrypt
+8. Configure SSL using [Dokku's Let's Encrypt plugin](https://github.com/dokku/dokku-letsencrypt).
 
 ```
 > sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
-> dokku config:set --no-restart mpm DOKKU_LETSENCRYPT_EMAIL=<e-mail para o certificado>
-> dokku letsencrypt meu_plantao_medico_site_engine
+> dokku config:set --no-restart my_webapp DOKKU_LETSENCRYPT_EMAIL=<e-mail para o certificado>
+> dokku letsencrypt my_webapp
 ```
 
-10. Configure o plugin para renovar automaticamente o certificado
+9. Configure the plugin to auto renew your certificate.
 
 ```
-> dokku letsencrypt:auto-renew meu_plantao_medico_site_engine
+> dokku letsencrypt:auto-renew my_webapp
 ```
 
-### Configurando a máquina de desenvolvimento
-
-Para fazer o deploy é tão simples quanto usar o Heroku.
-
-1. Clone a aplicação engine.
+10. If you need to send e-mails though Locomotive CMS, you must add some environment variables using the following command:
 
 ```
-> git clone git@gitlab.com:meu_plantao_medico/meu_plantao_medico_site_engine.git
-```
-
-2. Depois, basta apenas configurar o repositório Git de produção:
+> dokku config:set my_webapp SMTP_ADDRESS=<value> SMTP_DOMAIN=<value> SMTP_USER_NAME=<value> SMTP_PASSWORD=<value>
 
 ```
-> git remote add dokku dokku@IP_INSTANCIA_EC2:meu_plantao_medico_site_engine
+
+You can also specify aditional configuration with the following environment variables (optional):
+
+- `SMTP_PORT` (defaut: 587),
+- `SMTP_AUTHENTICATION` (default: login)
+- `SMTP_ENABLE_STARTTLS_AUTO` (default: true)
+
+## Deploy Locomotive CMS
+
+1. Clone the Locomotive CMS application engine.
+
+```
+> git clone git@github.com:gushonorato/locomotive_cms_dokku.git
 ```
 
-3. Para enviar uma atualiazação, basta fazer um push no repostiório dokku configurado.
+2. Add Dokku's production repository (like Heroku):
+
+```
+> git remote add dokku dokku@<ip_address>:<application_name>
+```
+
+3. To deploy Locomotive CMS, just push to production git repository.
 
 ```
 > git push dokku master
