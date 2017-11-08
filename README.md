@@ -30,9 +30,9 @@ This project aims to simplify the deployment of [Locomotive CMS](https://www.loc
 
 7. Locomotive requires MongoDB. Install [Dokku's MongoDB plugin](https://github.com/dokku/dokku-mongo), create the database and link the service to your Dokku application.
 ```
-sudo dokku plugin:install https://github.com/dokku/dokku-mongo.git mongo
-dokku mongo:create my_webapp_mongodb
-dokku mongo:link my_webapp_mongodb my_webapp
+> sudo dokku plugin:install https://github.com/dokku/dokku-mongo.git mongo
+> dokku mongo:create my_webapp_mongodb
+> dokku mongo:link my_webapp_mongodb my_webapp
 ```
 
 8. Configure SSL using [Dokku's Let's Encrypt plugin](https://github.com/dokku/dokku-letsencrypt).
