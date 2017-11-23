@@ -2,13 +2,11 @@ CarrierWave.configure do |config|
 
   config.cache_dir = File.join(Rails.root, 'tmp', 'uploads')
 
-  case Rails.env.to_sym
-
-  when :development
+  if Rails.env.development?
     config.storage = :file
     config.root = File.join(Rails.root, 'public')
 
-  when :production
+  elsif Rails.env.production? && ENV['S3_BUCKET'].present?
     # WARNING: add the "carrierwave-aws" gem in your Rails app Gemfile.
     # More information here: https://github.com/sorentwo/carrierwave-aws
 
