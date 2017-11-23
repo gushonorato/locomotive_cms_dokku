@@ -8,27 +8,29 @@ This project aims to simplify the deployment of [Locomotive CMS](https://www.loc
 
 2. Login via SSH on VPS instance and [install Dokku](https://github.com/dokku/dokku#installation).
 
-3. Type the public address of you instance in your browser and add a public key and click "Finish Setup". You must add the key of the developer resposible to deploy new versions of the application.
+3. Configure the swap space for your VPS server. You can follow [this](https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04) tutorial.
 
-4. Create Dokku application.
+4. Type the public address of you instance in your browser and add a public key and click "Finish Setup". You must add the key of the developer resposible to deploy new versions of the application.
+
+5. Create Dokku application.
 
 ```
 > dokku apps:create my_webapp
 ```
 
-5. You can configure Locomotive to use S3 to store assets and uploads. If you don't want to use S3, just skip this step. You must configure environment variables `S3_BUCKET`, `S3_KEY_ID`, `S3_SECRET_KEY` e `S3_BUCKET_REGION` with the following command:
+6. You can configure Locomotive to use S3 to store assets and uploads. If you don't want to use S3, just skip this step. You must configure environment variables `S3_BUCKET`, `S3_KEY_ID`, `S3_SECRET_KEY` e `S3_BUCKET_REGION` with the following command:
 
 ```
 > dokku config:set my_webapp S3_BUCKET=xxxx S3_KEY_ID=xxxx S3_SECRET_KEY=xxxx S3_BUCKET_REGION=xxxx
 ```
 
-6. Add you domain names in Dokku application
+7. Add you domain names in Dokku application
 
 ```
 > dokku domains:add my_webapp mydomain1.com mydomain2.com
 ```
 
-7. Locomotive requires MongoDB. Install [Dokku's MongoDB plugin](https://github.com/dokku/dokku-mongo), create the database and link the service to your Dokku application.
+8. Locomotive requires MongoDB. Install [Dokku's MongoDB plugin](https://github.com/dokku/dokku-mongo), create the database and link the service to your Dokku application.
 ```
 > sudo dokku plugin:install https://github.com/dokku/dokku-mongo.git mongo
 > dokku mongo:create my_webapp_mongodb
