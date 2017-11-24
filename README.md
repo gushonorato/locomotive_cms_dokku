@@ -18,10 +18,11 @@ This project aims to simplify the deployment of [Locomotive CMS](https://www.loc
 > dokku apps:create my_webapp
 ```
 
-6. You can configure Locomotive to use S3 to store assets and uploads. If you don't want to use S3, just skip this step. You must configure environment variables `S3_BUCKET`, `S3_KEY_ID`, `S3_SECRET_KEY` e `S3_BUCKET_REGION` with the following command:
+6. Dokku containers are ephemeral. You have do add a persistent storage, otherwise, all your uploaded data will be lost if you reboot your system or container. If you want to [store your assets in AWS S3](#using-s3-to-store-uploaded-assets), skip this step.
 
 ```
-> dokku config:set my_webapp S3_BUCKET=xxxx S3_KEY_ID=xxxx S3_SECRET_KEY=xxxx S3_BUCKET_REGION=xxxx
+mkdir -p /home/dokku/storage/my_webapp/public/sites
+dokku storage:mount my_webapp /home/dokku/storage/my_webapp/public/sites:/app/public/sites
 ```
 
 7. Add you domain names in Dokku application
@@ -89,3 +90,11 @@ You can also specify aditional configuration with the following environment vari
 - `SMTP_PORT` (defaut: 587),
 - `SMTP_AUTHENTICATION` (default: login)
 - `SMTP_ENABLE_STARTTLS_AUTO` (default: true)
+
+### Using S3 to store uploaded assets
+
+You can configure Locomotive to use S3 to store assets and uploads. You must configure environment variables `S3_BUCKET`, `S3_KEY_ID`, `S3_SECRET_KEY` e `S3_BUCKET_REGION` with the following command:
+
+```
+> dokku config:set my_webapp S3_BUCKET=xxxx S3_KEY_ID=xxxx S3_SECRET_KEY=xxxx S3_BUCKET_REGION=xxxx
+```
